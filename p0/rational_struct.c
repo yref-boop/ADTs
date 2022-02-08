@@ -23,7 +23,7 @@ int denominator (Rational r){
 Rational sum (Rational r1, Rational r2){
     Rational s;
 
-    s.num = r1.num * r2*den + r2.num * r1.den;
+    s.num = r1.num * r2.den + r2.num * r1.den;
     s.den = r1.den * r2.den;
     return s;
 }
