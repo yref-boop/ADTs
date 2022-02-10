@@ -1,3 +1,6 @@
+//Yago Fernandez Rego
+//Alejandro Fernandez Vazquez
+
 #ifndef RATIONAL_STRUCT_H
 #define RATIONAL_STRUCT_H
 

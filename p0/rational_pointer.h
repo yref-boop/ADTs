@@ -1,3 +1,6 @@
+//Yago Fernandez Rego
+//Alejandro Fernandez Vazquez
+
 #ifndef RATIONAL_POINTER_H
 #define RATIONAL_POINTER_H
 

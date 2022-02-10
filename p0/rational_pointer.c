@@ -1,3 +1,6 @@
+//Yago Fernandez Rego
+//Alejandro Fernandez Vazquez
+
 #include <stdlib.h>
 #include "rational_pointer.h"
 

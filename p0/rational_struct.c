@@ -1,3 +1,6 @@
+//Yago Fernandez Rego
+//Alejandro Fernandez Vazquez
+
 #include "rational_struct.h"
 
 //operation to create a rational number
