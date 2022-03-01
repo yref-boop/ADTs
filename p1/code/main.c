@@ -21,23 +21,26 @@
 #include "static_list.h"
 #endif
 
-
+void new (char product, char seller, char category, char seller, tList *list);
 
 
 void processCommand(char *commandNumber, char command, char *param1, char *param2, char *param3, char *param4) {
 
     switch (command) {
-        case 'N':
-            printf("Command: %s %c %s %s %s %s\n", commandNumber, command, param1, param2, param3, param4);
+        case 'N': {
+            printf("********************\n");
+            printf("%s %c: product %s seller %s category %s price %s\n", commandNumber, command, param1, param2, param3, param4);
+            new (param1, param2, param3, param4, list);
             break;
-        case 'S':
+        }
+        case 'S': {break;}
+            
+        case 'B': {break;}
+        case 'D': {break;}
+        default: {
+            printf("+ Error: Process command not possible");
             break;
-        case 'B':
-            break;
-        case 'D':
-            break;
-        default:
-            break;
+        }
     }
 }
 
@@ -87,8 +90,39 @@ int main(int nargs, char **args) {
     return 0;
 }
 
+tItemL addProduct (char *product, char *user, char *category, char *price) {
+    
+    tItemL product;
 
+    strcpy(product.productId, product);
 
+    strcpy(product.seller, user);
+
+    if (strcmp(category, "book") == 0)
+        product.productCategory = book;
+    else
+        product.productCategory = painting;
+
+    float num_price = atof(price);
+    product.productPrice = num_price;
+
+    product.bidCounter = 0;
+
+    return user;
+}
+
+void new (char *product, char *seller, char *category, char *price, tList *list) {
+    //auxiliary item to add to the list
+    tItemL auxProduct = addProduct (product, seller, category, price);
+
+    if(LNULL == findItem(auxProduct.productID , *list)) {
+
+        if (insertItem(auxProduct, LNULL, list) == true)
+            printf("* New: product %s seller %s category %s price %s\n" );
+        else printf("+ Error: New not possible\n");
+    }
+    else printf("+ Error: New not possible\n");
+}
 
 
 
