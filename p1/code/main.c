@@ -23,6 +23,7 @@
 
 void new (char product, char seller, char category, char seller, tList *list);
 
+void stat (tList *list);
 
 void processCommand(char *commandNumber, char command, char *param1, char *param2, char *param3, char *param4) {
 
@@ -33,10 +34,25 @@ void processCommand(char *commandNumber, char command, char *param1, char *param
             new (param1, param2, param3, param4, list);
             break;
         }
-        case 'S': {break;}
+        case 'S': {
+            printf("********************\n");
+            printf("%s %c: product %s seller %s category %s price %s\n", commandNumber, command, param1, param2, param3, param4);
+            stat (list);
+            break;
+        }
             
-        case 'B': {break;}
-        case 'D': {break;}
+        case 'B': {
+            printf("********************\n");
+            printf("%s %c: product %s seller %s category %s price %s\n", commandNumber, command, param1, param2, param3, param4);
+            new (param1, param2, param3, param4, list);
+            break;}
+
+        case 'D': {
+            printf("********************\n");
+            printf("%s %c: product %s seller %s category %s price %s\n", commandNumber, command, param1, param2, param3, param4);
+            delete (param1, param2, param3, param4, list);
+            break;}
+
         default: {
             printf("+ Error: Process command not possible");
             break;
@@ -124,5 +140,44 @@ void new (char *product, char *seller, char *category, char *price, tList *list)
     else printf("+ Error: New not possible\n");
 }
 
+void stat(tList *list) {
+    tPosL pos;
+    tItemL auxProduct;
 
+    int numBook = 0; numPaint = 0;
+    float priceBook = 0; pricePaint = 0;
+    float avgBook, avgPaint;
 
+    if (isEmptyList (*list) == true)
+        printf("+ Error: Stats not possible\n");
+    else {
+        pos = first(*list);
+        while (pos != LNULL) {
+            auxProduct = getItem(pos, *list);
+            if(auxProduct.productCategory == 0) {
+                numBook++;
+                priceBook += auxProduct.productPrice
+            }
+            else {
+                numPaint++;
+                pricePaint += auxProduct.productPrice;
+            }
+            printf("Product %s seller %s category %s price %f bids %d", auxProduct.productId, auxProduct.seller, auxProduct.productCategory, auxProduct.productPrice, auxProduct.bidCounter);
+            pos = next(pos, *list);
+        }
+        if (numBook == 0);
+            avgBook = 0;
+        else
+            avgBook = priceBook/numBook;
+
+        if (numPaint == 0)
+            avgPaint = 0;
+        else 
+            avgPaint = pricePaint/numPaint;
+
+        printf("%8s   %8s  %8.2s  %8.2s\n", "Category", "Products", "Price", "Average");
+        printf("%8s   %8s  %8.2s  %8.2s\n", "Book", numBook, priceBook,avgBook);
+        printf("%8s   %8s  %8.2s  %8.2s\n", "Painting", numPaint, pricePaint,avgPaint);
+    }
+
+}
