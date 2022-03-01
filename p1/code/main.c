@@ -25,6 +25,8 @@ void new (char product, char seller, char category, char seller, tList *list);
 
 void stat (tList *list);
 
+void bid (char product, char bid, tList *list);
+
 void processCommand(char *commandNumber, char command, char *param1, char *param2, char *param3, char *param4) {
 
     switch (command) {
@@ -179,5 +181,27 @@ void stat(tList *list) {
         printf("%8s   %8s  %8.2s  %8.2s\n", "Book", numBook, priceBook,avgBook);
         printf("%8s   %8s  %8.2s  %8.2s\n", "Painting", numPaint, pricePaint,avgPaint);
     }
+}
 
+void bid (char *product, char *bid, tList *list) {
+    tItemL auxProduct;
+    tPosL pos;
+    tProductId auxProdId;
+
+    if (isEmptyList(*list) == true)
+        printf("+ Error: Bid not possible\n");
+    else {
+        strcpy (auxProdId, product);
+        pos = findItem(auxProdId, *list);
+
+        if (pos != LNULL) {
+            auxProduct = getItem (pos, *list);
+            auxProduct.bidCounter = bid;
+            updateItem(auxProduct, pos, list);
+
+            printf("* Bid: product %s seller %s category %s prize %f bids %d\n", auxProduct.productId, auxProduct.seller, auxProduct.productCategory, auxProduct.productPrice, auxProduct.bidCounter);
+        }
+        
+        else printf("+ Error: Play not possible\n");
+    }
 }
