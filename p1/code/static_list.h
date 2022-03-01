@@ -10,7 +10,18 @@
 #ifndef STATIC_LIST_H
 #define STATIC_LIST_H
 
+#include <stdbool.h>
 #include "types.h"
+
+#define LNULL (-1)
+#define MAX 25
+
+typedef int tPosL;
+
+typedef struct {
+    tItemL data[MAX];
+    tPosL lastPos;
+} tList;
 
 void createEmptyList (tList *l);
 /*
@@ -62,10 +73,11 @@ tPosL previous (tPosL pos, tList l);
  *  PreCD: the indicated position is valid
  */
 
-bool insertItem (tItemL item, tList *l);
+bool insertItem (tItemL item, tPosL pos, tList *l);
 /*
  *  Goal:   insert an element on the List on given position
  *  Input:  -item:  data of the item to be inserted
+ *          -pos:   position to be inserted
  *          -l:     pointer to the list
  *  Output: boolean 'true' if insertion is successful
  *  PreCD:  the specified condition is valid
