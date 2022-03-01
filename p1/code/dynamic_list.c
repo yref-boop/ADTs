@@ -16,6 +16,8 @@ void createEmptyList (tList *list) {
 }
 
 bool createNode (tPosL *pos) {
+
+    //auxiliar function that creates a node
     *pos = malloc (sizeof(struct tNode));
     return *pos != LNULL;
 }
@@ -31,6 +33,7 @@ tPosL first (tList list) {
 tPosL last (tList list) {
     tPosL pos;
 
+    //check all items from first until its next is null
     while (pos -> next != LNULL) {
         pos = pos -> next;
     }
@@ -42,11 +45,15 @@ tPosL next (tPosL pos, tList list) {
 }
 
 tPosL previous (tPosL pos, tList list) {
+    
+    //if list is empty, return null
     if (list == LNULL)
         return LNULL;
     else {
         tPosL aux = list;
 
+        //from the beggining go to the left until the 
+        //next element is the one given
         while (aux -> next != pos)
             aux = aux -> next;
         return aux;
@@ -57,6 +64,7 @@ bool insertItem (tItemL item, tPosL pos, tList *list) {
     tPosL aux_prev = *list;
     tPosL aux_node;
 
+    //if the node cannot be created, return false
     if (!createNode(&aux_node))
         return false;
     else{
