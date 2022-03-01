@@ -21,38 +21,40 @@
 #include "static_list.h"
 #endif
 
-void new (char product, char seller, char category, char seller, tList *list);
+void new (char *product, char *seller, char *category, char *seller, tList *list);
 
 void stat (tList *list);
 
-void bid (char product, char bid, tList *list);
+void bid (char *product, char *bid, tList *list);
+
+void delete (char *product, tList *list);
 
 void processCommand(char *commandNumber, char command, char *param1, char *param2, char *param3, char *param4) {
 
     switch (command) {
         case 'N': {
             printf("********************\n");
-            printf("%s %c: product %s seller %s category %s price %s\n", commandNumber, command, param1, param2, param3, param4);
+            printf("%s %c: product %s seller/bidder %s category %s price %s\n", commandNumber, command, param1, param2, param3, param4);
             new (param1, param2, param3, param4, list);
             break;
         }
         case 'S': {
             printf("********************\n");
-            printf("%s %c: product %s seller %s category %s price %s\n", commandNumber, command, param1, param2, param3, param4);
+            printf("%s %c: product %s seller/bidder %s category %s price %s\n", commandNumber, command, param1, param2, param3, param4);
             stat (list);
             break;
         }
             
         case 'B': {
             printf("********************\n");
-            printf("%s %c: product %s seller %s category %s price %s\n", commandNumber, command, param1, param2, param3, param4);
-            new (param1, param2, param3, param4, list);
+            printf("%s %c: product %s seller/bidder %s category %s price %s\n", commandNumber, command, param1, param2, param3, param4);
+            bid (param1, param2, list);
             break;}
 
         case 'D': {
             printf("********************\n");
-            printf("%s %c: product %s seller %s category %s price %s\n", commandNumber, command, param1, param2, param3, param4);
-            delete (param1, param2, param3, param4, list);
+            printf("%s %c: product %s seller/bidder %s category %s price %s\n", commandNumber, command, param1, param2, param3, param4);
+            delete (param1, list);
             break;}
 
         default: {
@@ -203,5 +205,24 @@ void bid (char *product, char *bid, tList *list) {
         }
         
         else printf("+ Error: Play not possible\n");
+    }
+}
+
+void delete (char *product, tList *list) {
+    tItemL auxProduct;
+    tPosL pos;
+    tProductId auxProdId;
+
+    if (isEmptyList(*list) == true)
+        printf("+ Error: Delete not possible\n");
+    else {
+        strcpy(auxProdId, product);
+        pos = findItem(auxProdId, *list);
+        if(pos != LNULL){
+            auxProduct = getItem (pos, *list);
+            printf("* Delete: product %s seller %s category %s prize %f bids %d\n", auxProduct.productId, auxProduct.seller, auxProduct.productCategory, auxProduct.productPrice, auxProduct.bidCounter);
+            deleteAtPosition(pos, list);
+        }
+        else printf("+ Error: Delete not possible \n");
     }
 }
