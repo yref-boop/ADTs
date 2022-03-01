@@ -10,7 +10,17 @@
 #ifndef DYNAMIC_LIST_H
 #define DYNAMIC_LIST_H
 
+#include <stdbool.h>
 #include "types.h"
+
+#define LNULL NULL
+
+typedef struct tNode *tPosL;
+struct tNode {
+    tItemL data;
+    tPosL next;
+};
+typedef tPosL tList;
 
 void createEmptyList (tList *l);
 /*
@@ -62,10 +72,11 @@ tPosL previous (tPosL pos, tList l);
  *  PreCD: the indicated position is valid
  */
 
-bool insertItem (tItemL item, tList *l);
+bool insertItem (tItemL item, tPosL pos, tList *l);
 /*
  *  Goal:   insert an element on the List on given position
  *  Input:  -item:  data of the item to be inserted
+ *          -pos:   position where to insert
  *          -l:     pointer to the list
  *  Output: boolean 'true' if insertion is successful
  *  PreCD:  the specified condition is valid
@@ -90,7 +101,7 @@ tItemL getItem (tPosL pos, tList l);
  *  PreCD:  the indicated position is valid
  */
 
-void updateItem (tItemL item, tPosL pos, tList l);
+void updateItem (tItemL item, tPosL pos, tList *l);
 /*
  *  Goal:   modifies the data of the item at given pos
  *  Input:  -item : the item
