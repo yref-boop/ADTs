@@ -10,6 +10,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "dynamic_list.h"
+#include <stdio.h>
 
 void createEmptyList (tList *list) {
     *list = LNULL;
@@ -31,7 +32,7 @@ tPosL first (tList list) {
 }
 
 tPosL last (tList list) {
-    tPosL pos;
+    tPosL pos = list;
 
     //check all items from first until its next is null
     while (pos -> next != LNULL) {
@@ -68,7 +69,6 @@ bool insertItem (tItemL item, tPosL pos, tList *list) {
     if (!createNode(&aux_node))
         return false;
     else{
-
         //insert data into the node
         aux_node -> data = item;
 
@@ -86,15 +86,17 @@ bool insertItem (tItemL item, tPosL pos, tList *list) {
 
         //position on the middle or end
         else {
-            while (aux_prev -> next != pos) 
-                aux_prev -> next;
+            while (aux_prev -> next != pos)
+                aux_prev = aux_prev -> next;
             if (pos == LNULL)
                 aux_node -> next = LNULL;
             else
                 aux_node -> next = aux_prev -> next;
-            aux_prev -> next = aux_node;
+            aux_prev ->next = aux_node;
         }
     }
+
+    return true;
 }
 
 void deleteAtPosition (tPosL pos, tList *list) {
@@ -117,7 +119,6 @@ void deleteAtPosition (tPosL pos, tList *list) {
         pos -> next = aux -> next;
         pos = aux;
     }
-
     free (pos);
 }
 
@@ -138,12 +139,15 @@ tPosL findItem (tProductId id, tList list) {
     else
         //check if any element satisfies id
         while (aux -> next != LNULL) {
-            if (aux -> data.productId == id)
-                return aux;
-            else
+            if (strcmp(aux -> data.productId, id))
                 aux = aux -> next;
+            else
+                return aux;
         }
+    //check last one
+    if (aux -> data.productId == id)
+        return aux;
+    else
     //if none does
-    return LNULL;
+        return LNULL;
 }
-

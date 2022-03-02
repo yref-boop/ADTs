@@ -21,7 +21,7 @@
 #include "static_list.h"
 #endif
 
-void new (char *product, char *seller, char *category, char *seller, tList *list);
+void new (char *product, char *seller, char *category, char *price, tList *list);
 
 void stat (tList *list);
 
@@ -29,18 +29,18 @@ void bid (char *product, char *bid, tList *list);
 
 void delete (char *product, tList *list);
 
-void processCommand(char *commandNumber, char command, char *param1, char *param2, char *param3, char *param4) {
+void processCommand(char *commandNumber, char command, char *param1, char *param2, char *param3, char *param4, tList *list) {
 
     switch (command) {
         case 'N': {
             printf("********************\n");
-            printf("%s %c: product %s seller/bidder %s category %s price %s\n", commandNumber, command, param1, param2, param3, param4);
+            printf("%s %c: product %s seller %s category %s price %s\n", commandNumber, command, param1, param2, param3, param4);
             new (param1, param2, param3, param4, list);
             break;
         }
         case 'S': {
             printf("********************\n");
-            printf("%s %c: product %s seller/bidder %s category %s price %s\n", commandNumber, command, param1, param2, param3, param4);
+            printf("%s %c\n", commandNumber, command);
             stat (list);
             break;
         }
@@ -70,6 +70,9 @@ void readTasks(char *filename) {
     const char delimiters[] = " \n\r";
     char buffer[MAX_BUFFER];
 
+    tList list;
+    createEmptyList(&list);
+
     f = fopen(filename, "r");
 
     if (f != NULL) {
@@ -82,7 +85,7 @@ void readTasks(char *filename) {
             param3 = strtok(NULL, delimiters);
             param4 = strtok(NULL, delimiters);
 
-            processCommand(commandNumber, command[0], param1, param2, param3, param4);
+            processCommand(commandNumber, command[0], param1, param2, param3, param4, &list);
         }
 
         fclose(f);
@@ -110,35 +113,43 @@ int main(int nargs, char **args) {
     return 0;
 }
 
+char* extractCategory(tItemL prod) {
+
+    // Translate the category to text.
+    if (prod.productCategory == book)
+        return "book";
+    else
+        return "painting";
+}
+
 tItemL addProduct (char *product, char *user, char *category, char *price) {
     
-    tItemL product;
+    tItemL aux_product;
 
-    strcpy(product.productId, product);
+    strcpy(aux_product.productId, product);
 
-    strcpy(product.seller, user);
+    strcpy(aux_product.seller, user);
 
     if (strcmp(category, "book") == 0)
-        product.productCategory = book;
+        aux_product.productCategory = book;
     else
-        product.productCategory = painting;
+        aux_product.productCategory = painting;
 
     float num_price = atof(price);
-    product.productPrice = num_price;
+    aux_product.productPrice = num_price;
 
-    product.bidCounter = 0;
+    aux_product.bidCounter = 0;
 
-    return user;
+    return aux_product;
 }
 
 void new (char *product, char *seller, char *category, char *price, tList *list) {
     //auxiliary item to add to the list
     tItemL auxProduct = addProduct (product, seller, category, price);
 
-    if(LNULL == findItem(auxProduct.productID , *list)) {
-
+    if(findItem(auxProduct.productId, *list) == LNULL) {
         if (insertItem(auxProduct, LNULL, list) == true)
-            printf("* New: product %s seller %s category %s price %s\n" );
+            printf("* New: product %s seller %s category %s price %s\n", auxProduct.productId, auxProduct.seller, extractCategory(auxProduct), price);
         else printf("+ Error: New not possible\n");
     }
     else printf("+ Error: New not possible\n");
@@ -148,8 +159,10 @@ void stat(tList *list) {
     tPosL pos;
     tItemL auxProduct;
 
-    int numBook = 0; numPaint = 0;
-    float priceBook = 0; pricePaint = 0;
+    int numBook = 0; 
+    int numPaint = 0;
+    float priceBook = 0; 
+    float pricePaint = 0;
     float avgBook, avgPaint;
 
     if (isEmptyList (*list) == true)
@@ -160,16 +173,16 @@ void stat(tList *list) {
             auxProduct = getItem(pos, *list);
             if(auxProduct.productCategory == 0) {
                 numBook++;
-                priceBook += auxProduct.productPrice
+                priceBook += auxProduct.productPrice;
             }
             else {
                 numPaint++;
                 pricePaint += auxProduct.productPrice;
             }
-            printf("Product %s seller %s category %s price %f bids %d", auxProduct.productId, auxProduct.seller, auxProduct.productCategory, auxProduct.productPrice, auxProduct.bidCounter);
+            printf("Product %s seller %s category %s price %.2f bids %d\n", auxProduct.productId, auxProduct.seller, extractCategory(auxProduct), auxProduct.productPrice, auxProduct.bidCounter);
             pos = next(pos, *list);
         }
-        if (numBook == 0);
+        if (numBook == 0)
             avgBook = 0;
         else
             avgBook = priceBook/numBook;
@@ -179,9 +192,9 @@ void stat(tList *list) {
         else 
             avgPaint = pricePaint/numPaint;
 
-        printf("%8s   %8s  %8.2s  %8.2s\n", "Category", "Products", "Price", "Average");
-        printf("%8s   %8s  %8.2s  %8.2s\n", "Book", numBook, priceBook,avgBook);
-        printf("%8s   %8s  %8.2s  %8.2s\n", "Painting", numPaint, pricePaint,avgPaint);
+        printf("\nCategory  Products    Price  Average\n");
+        printf("Book      %8d %8.2f %8.2f\n", numBook, priceBook,avgBook);
+        printf("Painting  %8d %8.2f %8.2f\n", numPaint, pricePaint,avgPaint);
     }
 }
 
@@ -189,6 +202,7 @@ void bid (char *product, char *bid, tList *list) {
     tItemL auxProduct;
     tPosL pos;
     tProductId auxProdId;
+    int bid_num = bid - '0';
 
     if (isEmptyList(*list) == true)
         printf("+ Error: Bid not possible\n");
@@ -198,13 +212,13 @@ void bid (char *product, char *bid, tList *list) {
 
         if (pos != LNULL) {
             auxProduct = getItem (pos, *list);
-            auxProduct.bidCounter = bid;
+            auxProduct.bidCounter = bid_num;
             updateItem(auxProduct, pos, list);
 
-            printf("* Bid: product %s seller %s category %s prize %f bids %d\n", auxProduct.productId, auxProduct.seller, auxProduct.productCategory, auxProduct.productPrice, auxProduct.bidCounter);
+            printf("* Bid: product %s bidder %s prize %f", auxProduct.productId, auxProduct.seller, auxProduct.productPrice);
         }
         
-        else printf("+ Error: Play not possible\n");
+        else printf("+ Error: Bid not possible\n");
     }
 }
 
@@ -220,7 +234,7 @@ void delete (char *product, tList *list) {
         pos = findItem(auxProdId, *list);
         if(pos != LNULL){
             auxProduct = getItem (pos, *list);
-            printf("* Delete: product %s seller %s category %s prize %f bids %d\n", auxProduct.productId, auxProduct.seller, auxProduct.productCategory, auxProduct.productPrice, auxProduct.bidCounter);
+            printf("* Delete: product %s seller %s category %s prize %f bids %d\n", auxProduct.productId, auxProduct.seller, extractCategory(auxProduct), auxProduct.productPrice, auxProduct.bidCounter);
             deleteAtPosition(pos, list);
         }
         else printf("+ Error: Delete not possible \n");
