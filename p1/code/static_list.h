@@ -102,7 +102,7 @@ tItemL getItem (tPosL pos, tList l);
  *  PreCD:  the indicated position is valid
  */
 
-void updateItem (tItemL item, tPosL pos, tList l);
+void updateItem (tItemL item, tPosL pos, tList *l);
 /*
  *  Goal:   modifies the data of the item at given pos
  *  Input:  -item : the item

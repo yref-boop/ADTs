@@ -169,7 +169,7 @@ void stat(tList *list) {
         printf("+ Error: Stats not possible\n");
     else {
         pos = first(*list);
-        while (pos != LNULL) {
+        while (1) {
             auxProduct = getItem(pos, *list);
             if(auxProduct.productCategory == 0) {
                 numBook++;
@@ -180,7 +180,9 @@ void stat(tList *list) {
                 pricePaint += auxProduct.productPrice;
             }
             printf("Product %s seller %s category %s price %.2f bids %d\n", auxProduct.productId, auxProduct.seller, extractCategory(auxProduct), auxProduct.productPrice, auxProduct.bidCounter);
-            pos = next(pos, *list);
+            if (pos == last(*list))
+                break;
+            else pos = next(pos, *list);
         }
         if (numBook == 0)
             avgBook = 0;
