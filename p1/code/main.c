@@ -25,7 +25,7 @@ void new (char *product, char *seller, char *category, char *price, tList *list)
 
 void stat (tList *list);
 
-void bid (char *product, char *bid, tList *list);
+void bid (char *product, char *bid, char *price, tList *list);
 
 void delete (char *product, tList *list);
 
@@ -47,13 +47,13 @@ void processCommand(char *commandNumber, char command, char *param1, char *param
             
         case 'B': {
             printf("********************\n");
-            printf("%s %c: product %s seller/bidder %s category %s price %s\n", commandNumber, command, param1, param2, param3, param4);
-            bid (param1, param2, list);
+            printf("%s %c: product %s bidder %s price %s\n", commandNumber, command, param1, param2, param3);
+            bid (param1, param2, param3, list);
             break;}
 
         case 'D': {
             printf("********************\n");
-            printf("%s %c: product %s seller/bidder %s category %s price %s\n", commandNumber, command, param1, param2, param3, param4);
+            printf("%s %c: product %s\n", commandNumber, command, param1);
             delete (param1, list);
             break;}
 
@@ -198,13 +198,13 @@ void stat(tList *list) {
     }
 }
 
-void bid (char *product, char *bid, tList *list) {
+void bid (char *product, char *bid, char *price, tList *list) {
     tItemL auxProduct;
     tPosL pos;
     tProductId auxProdId;
-    int bid_num = bid - '0';
+    float num_price = strtof(price, NULL);
 
-    if (isEmptyList(*list) == true)
+    if ((isEmptyList(*list) == true))
         printf("+ Error: Bid not possible\n");
     else {
         strcpy (auxProdId, product);
@@ -212,10 +212,19 @@ void bid (char *product, char *bid, tList *list) {
 
         if (pos != LNULL) {
             auxProduct = getItem (pos, *list);
-            auxProduct.bidCounter = bid_num;
-            updateItem(auxProduct, pos, list);
+            if (!(strcmp(auxProduct.seller, bid)))
+                printf("+ Error: Bid not possible\n");
+            else {
+                if (auxProduct.productPrice == num_price)
+                    printf("+ Error: Bid not possible\n");
+                else {
+                    auxProduct.bidCounter++;
+                    auxProduct.productPrice = num_price;
+                    updateItem(auxProduct, pos, list);
 
-            printf("* Bid: product %s bidder %s prize %f", auxProduct.productId, auxProduct.seller, auxProduct.productPrice);
+                printf("* Bid: product %s seller %s category %s price %.2f bids %d \n", auxProduct.productId, auxProduct.seller, extractCategory(auxProduct), auxProduct.productPrice, auxProduct.bidCounter);
+                }
+            }
         }
         
         else printf("+ Error: Bid not possible\n");
@@ -234,7 +243,7 @@ void delete (char *product, tList *list) {
         pos = findItem(auxProdId, *list);
         if(pos != LNULL){
             auxProduct = getItem (pos, *list);
-            printf("* Delete: product %s seller %s category %s prize %f bids %d\n", auxProduct.productId, auxProduct.seller, extractCategory(auxProduct), auxProduct.productPrice, auxProduct.bidCounter);
+            printf("* Delete: product %s seller %s category %s price %.2f bids %d\n", auxProduct.productId, auxProduct.seller, extractCategory(auxProduct), auxProduct.productPrice, auxProduct.bidCounter);
             deleteAtPosition(pos, list);
         }
         else printf("+ Error: Delete not possible \n");
