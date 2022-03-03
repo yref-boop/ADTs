@@ -86,39 +86,47 @@ bool insertItem (tItemL item, tPosL pos, tList *list) {
 
         //position on the middle or end
         else {
+            //find previous position
             while (aux_prev -> next != pos)
                 aux_prev = aux_prev -> next;
+            //previous is last on list
             if (pos == LNULL)
                 aux_node -> next = LNULL;
+            //pos on the middle
             else
                 aux_node -> next = aux_prev -> next;
-            aux_prev ->next = aux_node;
+            //always done on middle or end
+            aux_prev -> next = aux_node;
         }
     }
-
+    //insertion successful
     return true;
 }
 
 void deleteAtPosition (tPosL pos, tList *list) {
     tPosL aux = *list;
 
-    //given position iis first
+    //given position is first
     if (*list == pos)
         *list = pos -> next;
 
     //given position is last
     else if (pos -> next == LNULL) {
+        //move to the position before last
         while (aux -> next != pos)
             aux = aux -> next;
+        //point towards NULL
         aux -> next = LNULL;
     }
-    //general case
+    //general case (middle)
     else {
+        //move pointers and data
         aux = pos -> next;
         pos -> data = aux -> data;
         pos -> next = aux -> next;
         pos = aux;
     }
+    //free data stored on pos
     free (pos);
 }
 

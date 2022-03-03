@@ -15,6 +15,7 @@
 
 #define LNULL NULL
 
+//definition of the nodes and list
 typedef struct tNode *tPosL;
 struct tNode {
     tItemL data;
