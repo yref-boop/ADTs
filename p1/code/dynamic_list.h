@@ -1,10 +1,10 @@
 /*
  * TITLE: PROGRAMMING II LABS
  * SUBTITLE: Practical 1
- * AUTHOR 1: ***************************** LOGIN 1: **********
- * AUTHOR 2: ***************************** LOGIN 2: **********
- * GROUP: *.*
- * DATE: ** / ** / **
+ * AUTHOR 1: Alejandro Fernandez Vazquez LOGIN 1: a.fernandez9
+ * AUTHOR 2: Yago Fernandez Rego LOGIN 2: yago.fernandez.rego        
+ * GROUP: *6.1*
+ * DATE: 08 / 03 / 22
  */
 
 #ifndef DYNAMIC_LIST_H
