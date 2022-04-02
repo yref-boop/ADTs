@@ -9,6 +9,8 @@
 
 #include "product_list.h"
 #include <string.h>
+#include <stdlib.h>
+#include <stdio.h>
 
 void createEmptyList (tList *list) {
     *list = LNULL;
@@ -77,7 +79,7 @@ bool insertItem (tItemL item, tList *list) {
 
         //check all the list and search for product ide that should be after 
         while (aux_prev -> next != LNULL){
-        if(strcmp(item.productId,aux_node->next->data.productId) < 0)
+        if(strcmp(item.productId,aux_prev->next->data.productId) < 0)
                 break;
             aux_prev = aux_prev -> next;
         }
