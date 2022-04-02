@@ -67,6 +67,7 @@ bool insertItem (tItemL item, tList *list) {
 
     if(!createNode(&aux_node))
         return false;
+
     else{
         //insert data into the node
         aux_node -> data = item;
@@ -75,15 +76,22 @@ bool insertItem (tItemL item, tList *list) {
         if(*list == LNULL){
             *list = aux_node;
             aux_node -> next = LNULL;
+            return true;
         }
 
-        //check all the list and search for product ide that should be after 
-        while (aux_prev -> next != LNULL){
-        if(strcmp(item.productId,aux_prev->next->data.productId) < 0)
-                break;
+        //only one element
+        if(aux_prev -> next == LNULL)
+            if (strcmp(item.productId,aux_prev->data.productId) < 0){
+                *list = aux_node;
+                aux_node -> next = aux_prev;
+                return true;
+            }
+
+        //check all the list and search for product id that should be after 
+        while ((aux_prev -> next != LNULL)&&(strcmp(item.productId,aux_prev->next->data.productId) > 0))
             aux_prev = aux_prev -> next;
-        }
-        aux_node -> next = aux_prev -> next -> next;
+
+        aux_node -> next = aux_prev -> next;
         aux_prev -> next = aux_node;
     }
     return true;
@@ -132,14 +140,10 @@ tPosL findItem (tProductId id, tList list) {
         return LNULL;
     else
         //check if any element satisfies id
-        while (aux -> next != LNULL) {
-            if (strcmp(aux -> data.productId, id))
-                aux = aux -> next;
-            else
-                return aux;
-        }
+        while ((aux -> next != LNULL) &&(strcmp(id,aux->data.productId) > 0)) 
+            aux = aux -> next;
     //check last one
-    if (aux -> data.productId == id)
+    if (strcmp(aux -> data.productId, id)==0)
         return aux;
     else
     //if none does
