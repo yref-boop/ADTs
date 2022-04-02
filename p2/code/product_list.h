@@ -12,10 +12,21 @@
 
 #include <stdbool.h>
 #include "types.h"
+#include "bid_stack.h"
 
 #define LNULL NULL
 
 //definition of the nodes and list
+
+typedef struct{
+    tUserId seller;
+    tProductId productId;
+    tProductCategory productCategory;
+    tProductPrice productPrice;
+    tBidCounter bidCounter;
+    tStack bidStack;
+} tItemL;
+
 typedef struct tNode *tPosL;
 struct tNode {
     tItemL data;
