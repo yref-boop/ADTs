@@ -19,7 +19,7 @@
 
 void new (char *product, char *seller, char *category, char *price, tList *list);
 void stat (tList *list);
-
+void bid (char *product, char *bid, char *price, tList *list);
 
 void processCommand(char *commandNumber, char command, char *param1, char *param2, char *param3, char *param4, tList *list) {
 
@@ -36,8 +36,12 @@ void processCommand(char *commandNumber, char command, char *param1, char *param
             stat (list);
             break;
         }
-        case 'B':
+        case 'B': {
+			printf("********************\n");
+ 			printf("%s %c: product %s bidder %s price %s\n", commandNumber, command, param1, param2, param3);
+            bid (param1, param2, param3, list);
             break;
+		}
         case 'D':
             break;
         case 'A':
@@ -57,6 +61,16 @@ char* extractCategory(tItemL prod) {
         return "book";
     else
         return "painting";
+}
+
+tItemS addBid (char *bidder, char *price){
+	tItemS aux_bid;
+
+	strcpy(aux_bid.bidder, bidder);
+	float num_price = atof(price);
+	aux_bid.productPrice = num_price;
+
+	return aux_bid;
 }
 
 tItemL addProduct (char *product, char *seller, char *category, char *price){
@@ -148,7 +162,7 @@ void stat (tList *list){
 				printf(". No bids\n");
 			else {
 				strcpy(top_bidder, peek(aux_product.bidStack).bidder);
-				printf("bids %d top bidder %s\n", aux_product.bidCounter, top_bidder);
+				printf(" bids %d top bidder %s\n", aux_product.bidCounter, top_bidder);
 			}
 
 			// check condition to break the loop
@@ -175,8 +189,44 @@ void stat (tList *list){
 			printf("Top bid not possible\n");
 		else{
 			aux_bid = peek(tbid_product.bidStack);
-			printf("Top bid: Product %s seller %s category %s price %.2f bidder %s top price %.2f increase %.2f%", tbid_product.productId, tbid_product.seller, extractCategory(tbid_product), tbid_product.productPrice, aux_bid.bidder, aux_bid.productPrice, (aux_bid.productPrice/tbid_product.productPrice)*100);
+			printf("Top bid: Product %s seller %s category %s price %.2f bidder %s top price %.2f increase %.2f%%\n", tbid_product.productId, tbid_product.seller, extractCategory(tbid_product), tbid_product.productPrice, aux_bid.bidder, aux_bid.productPrice, (aux_bid.productPrice/tbid_product.productPrice-1)*100);
 		}
+    }
+}
+
+void bid (char *product, char *bid, char *price, tList *list ){
+	tItemL aux_product;
+    tPosL pos;
+    tProductId aux_id;
+	tItemS aux_bid;
+
+    float num_price = strtof(price, NULL);
+
+    if ((isEmptyList(*list) == true))
+        printf("+ Error: Bid not possible\n");
+    else {
+        strcpy (aux_id, product);
+        pos = findItem(aux_id, *list);
+
+        if (pos != LNULL) {
+            aux_product = getItem (pos, *list);
+            if (!(strcmp(aux_product.seller, bid)))
+                printf("+ Error: Bid not possible\n");
+            else {
+                if (aux_product.productPrice >= num_price)
+                    printf("+ Error: Bid not possible\n");
+                else {
+                    aux_product.bidCounter++;
+
+					aux_bid = addBid(bid, price);
+					if (push(aux_bid, &aux_product.bidStack)){
+                    	updateItem(aux_product, pos, list);
+                		printf("* Bid: product %s bidder %s category %s price %.2f bids %d \n", aux_product.productId, bid, extractCategory(aux_product), atof(price), aux_product.bidCounter);
+					}
+                }
+            }
+        }   
+        else printf("+ Error: Bid not possible\n");
     }
 }
 
