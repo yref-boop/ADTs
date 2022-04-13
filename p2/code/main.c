@@ -20,6 +20,7 @@
 void new (char *product, char *seller, char *category, char *price, tList *list);
 void stat (tList *list);
 void bid (char *product, char *bid, char *price, tList *list);
+void delete (char *product, tList *list);
 
 void processCommand(char *commandNumber, char command, char *param1, char *param2, char *param3, char *param4, tList *list) {
 
@@ -42,8 +43,12 @@ void processCommand(char *commandNumber, char command, char *param1, char *param
             bid (param1, param2, param3, list);
             break;
 		}
-        case 'D':
+		case 'D': {
+            printf("********************\n");
+            printf("%s %c: product %s\n", commandNumber, command, param1);
+            delete (param1, list);
             break;
+		}
         case 'A':
             break;
         case 'W':
@@ -227,6 +232,28 @@ void bid (char *product, char *bid, char *price, tList *list ){
             }
         }   
         else printf("+ Error: Bid not possible\n");
+    }
+}
+
+void delete (char *product, tList *list) {
+    tItemL aux_product;
+    tPosL pos;
+    tProductId aux_id;
+
+    if (isEmptyList(*list) == true)
+        printf("+ Error: Delete not possible\n");
+    else {
+        strcpy(aux_id, product);
+        pos = findItem(aux_id, *list);
+        if(pos != LNULL){
+            aux_product = getItem (pos, *list);
+            printf("* Delete: product %s seller %s category %s price %.2f bids %d\n", aux_product.productId, aux_product.seller, extractCategory(aux_product), aux_product.productPrice, aux_product.bidCounter);
+			while (!(isEmptyStack(aux_product.bidStack))){
+				pop(&aux_product.bidStack);
+			}
+            deleteAtPosition(pos, list);
+        }
+        else printf("+ Error: Delete not possible \n");
     }
 }
 
