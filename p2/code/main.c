@@ -21,6 +21,7 @@ void new (char *product, char *seller, char *category, char *price, tList *list)
 void stat (tList *list);
 void bid (char *product, char *bid, char *price, tList *list);
 void delete (char *product, tList *list);
+void award (char *product, tList *list);
 
 void processCommand(char *commandNumber, char command, char *param1, char *param2, char *param3, char *param4, tList *list) {
 
@@ -49,8 +50,12 @@ void processCommand(char *commandNumber, char command, char *param1, char *param
             delete (param1, list);
             break;
 		}
-        case 'A':
+        case 'A':{
+			printf("********************\n");
+			printf("%s %c: product %s\n", commandNumber, command, param1);
+			award (param1, list);
             break;
+		}
         case 'W':
             break;
         case 'R':
@@ -248,13 +253,35 @@ void delete (char *product, tList *list) {
         if(pos != LNULL){
             aux_product = getItem (pos, *list);
             printf("* Delete: product %s seller %s category %s price %.2f bids %d\n", aux_product.productId, aux_product.seller, extractCategory(aux_product), aux_product.productPrice, aux_product.bidCounter);
-			while (!(isEmptyStack(aux_product.bidStack))){
+			while (!(isEmptyStack(aux_product.bidStack)))
 				pop(&aux_product.bidStack);
-			}
             deleteAtPosition(pos, list);
         }
         else printf("+ Error: Delete not possible \n");
     }
+}
+
+void award (char *product, tList *list) {
+	tItemL aux_product;
+	tItemS aux_bid;
+	tPosL pos;
+	tProductId aux_id;
+
+	if(!(isEmptyList(*list))){
+		strcpy(aux_id, product);
+		pos = findItem(aux_id, *list);
+		if(pos != LNULL){
+			aux_product = getItem(pos, *list);
+			if (!(isEmptyStack(aux_product.bidStack))){
+				aux_bid = peek(aux_product.bidStack);
+				printf("* Award: product %s bidder %s category %s price %.2f\n", aux_product.productId, aux_bid.bidder, extractCategory(aux_product), aux_bid.productPrice);
+			}
+			while (!(isEmptyStack(aux_product.bidStack)))
+				pop(&aux_product.bidStack);
+			deleteAtPosition(pos, list);
+		}
+	}
+	else printf ("+ Error: Award not possible");
 }
 
 void readTasks(char *filename) {
