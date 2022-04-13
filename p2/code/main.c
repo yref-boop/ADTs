@@ -23,6 +23,7 @@ void bid (char *product, char *bid, char *price, tList *list);
 void delete (char *product, tList *list);
 void award (char *product, tList *list);
 void withdraw (char *product, char *bid, tList *list);
+void remove_product (tList *list);
 
 void processCommand(char *commandNumber, char command, char *param1, char *param2, char *param3, char *param4, tList *list) {
 
@@ -63,8 +64,12 @@ void processCommand(char *commandNumber, char command, char *param1, char *param
 			withdraw (param1, param2, list);
             break;
 		}
-        case 'R':
+        case 'R':{
+			printf("********************\n");
+			printf("%s %c\n", commandNumber, command);
+			remove_product (list);
             break;
+		}
         default:
             break;
     }
@@ -312,6 +317,26 @@ void withdraw (char *product, char *bid, tList *list) {
 		}
 	}
 	else printf ("+ Error: Withdraw not possible");
+}
+
+void remove_product (tList *list) {
+	tItemL aux_product;
+	tPosL pos = first(*list);
+	int count = 0;
+
+	if (!(isEmptyList(*list))){
+		do{
+			aux_product = getItem (pos, *list);
+			if (isEmptyStack(aux_product.bidStack)){
+				printf("Removing product %s seller %s category %s price %.2f bids %d\n", aux_product.productId, aux_product.seller, extractCategory(aux_product), aux_product.productPrice, aux_product.bidCounter);
+				deleteAtPosition(pos, list);
+			}
+			else pos = next(pos, *list);
+			count ++;
+		} while (pos != LNULL);
+		if (count < 1) printf ("+ Error: Remove not possible");
+	}
+	else printf ("+ Error: Remove not possible");
 }
 
 void readTasks(char *filename) {
