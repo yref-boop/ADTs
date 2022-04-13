@@ -158,12 +158,12 @@ void stat (tList *list){
 			// set the auxiliar product as the one corresponding to the iteration
             aux_product = getItem(pos, *list);
 			// if there are bids, check if bid value is bigger than last
-			if(!(isEmptyStack(aux_product.bidStack))){
+			if (!(isEmptyStack(aux_product.bidStack))){
 				tbid_bid = peek(aux_product.bidStack);
-				// if it is, store values 
-				if(tbid_bid.productPrice > tbid_val){
+				// if it is, store values
+				if ((tbid_bid.productPrice/aux_product.productPrice)*100 > tbid_val){
 					tbid_product = aux_product;
-					tbid_val = tbid_bid.productPrice;
+					tbid_val = (tbid_bid.productPrice/aux_product.productPrice)*100;
 				}
 			}
 
