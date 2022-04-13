@@ -22,6 +22,7 @@ void stat (tList *list);
 void bid (char *product, char *bid, char *price, tList *list);
 void delete (char *product, tList *list);
 void award (char *product, tList *list);
+void withdraw (char *product, char *bid, tList *list);
 
 void processCommand(char *commandNumber, char command, char *param1, char *param2, char *param3, char *param4, tList *list) {
 
@@ -50,14 +51,18 @@ void processCommand(char *commandNumber, char command, char *param1, char *param
             delete (param1, list);
             break;
 		}
-        case 'A':{
+        case 'A': {
 			printf("********************\n");
 			printf("%s %c: product %s\n", commandNumber, command, param1);
 			award (param1, list);
             break;
 		}
-        case 'W':
+        case 'W': {
+			printf("********************\n");
+			printf("%s %c: product %s bidder %s\n", commandNumber, command, param1, param2);
+			withdraw (param1, param2, list);
             break;
+		}
         case 'R':
             break;
         default:
@@ -282,6 +287,31 @@ void award (char *product, tList *list) {
 		}
 	}
 	else printf ("+ Error: Award not possible");
+}
+
+void withdraw (char *product, char *bid, tList *list) {
+	tItemL aux_product;
+	tItemS aux_bid;
+	tPosL pos;
+	tProductId aux_id;
+
+	if(!(isEmptyList(*list))){
+		strcpy (aux_id, product);
+		pos = findItem(aux_id, *list);
+		if(pos != LNULL){
+			aux_product = getItem(pos, *list);
+			if(!(isEmptyStack(aux_product.bidStack))){
+				aux_bid = peek(aux_product.bidStack);
+				if(!(strcmp(aux_bid.bidder, bid))){
+					pop(&aux_product.bidStack);
+					printf("* Withdraw: product %s bidder %s category %s price %.2f bids %d\n", aux_product.productId, aux_bid.bidder, extractCategory(aux_product), aux_bid.productPrice, aux_product.bidCounter);
+					aux_product.bidCounter--;
+					updateItem(aux_product, pos, list);
+				}
+			}
+		}
+	}
+	else printf ("+ Error: Withdraw not possible");
 }
 
 void readTasks(char *filename) {
