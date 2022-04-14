@@ -214,104 +214,100 @@ void stat (tList *list){
     }
 }
 
+tPosL exists(char *product, tList *list){
+	tProductId aux_id;
+
+	if ((isEmptyList(*list)))
+		return LNULL;
+	strcpy (aux_id, product);
+	return findItem(aux_id, *list);
+}
+
 void bid (char *product, char *bid, char *price, tList *list ){
 	// auxiliar data
 	tItemL aux_product;
     tPosL pos;
-    tProductId aux_id;
 	tItemS aux_bid;
 
     float num_price = strtof(price, NULL);
 
-	//check if list is empty
-    if ((isEmptyList(*list) == true))
-        printf("+ Error: Bid not possible\n");
-    else {
-        strcpy (aux_id, product);
-        pos = findItem(aux_id, *list);
+	// check if there exists a product on the list with the wanted id
+	pos = exists(product,list);
 
-		//check if position was found
-        if (pos != LNULL) {
-            aux_product = getItem (pos, *list);
-			// check that the bidder is not the same as the seller
-            if (!(strcmp(aux_product.seller, bid)))
+	//check if position was found
+    if (pos != LNULL) {
+    	aux_product = getItem (pos, *list);
+		// check that the bidder is not the same as the seller
+        if (!(strcmp(aux_product.seller, bid)))
+            printf("+ Error: Bid not possible\n");
+        else {
+
+			// check condition for the stack
+			if (!(isEmptyStack(aux_product.bidStack))){
+				if (peek(aux_product.bidStack).productPrice >= num_price){
+					printf("+ Error: bid not possible\n");
+					return;
+				}
+			}
+			// check condition for the initial price
+            if (aux_product.productPrice >= num_price)
                 printf("+ Error: Bid not possible\n");
             else {
-
-				// check condition for the stack
-				if (!(isEmptyStack(aux_product.bidStack))){
-					if (peek(aux_product.bidStack).productPrice >= num_price){
-						printf("+ Error: bid not possible\n");
-						return;
+                aux_product.bidCounter++;
+				aux_bid = addBid(bid, price);
+				// check if bid can be inserted
+				if (push(aux_bid, &aux_product.bidStack)){
+                	updateItem(aux_product, pos, list);
+            		printf("* Bid: product %s bidder %s category %s price %.2f bids %d \n", aux_product.productId, bid, extractCategory(aux_product), atof(price), aux_product.bidCounter);
 					}
-				}
-				// check condition for the initial price
-                if (aux_product.productPrice >= num_price)
-                    printf("+ Error: Bid not possible\n");
-                else {
-                    aux_product.bidCounter++;
-					aux_bid = addBid(bid, price);
-					//check if bid can be inserted
-					if (push(aux_bid, &aux_product.bidStack)){
-                    	updateItem(aux_product, pos, list);
-                		printf("* Bid: product %s bidder %s category %s price %.2f bids %d \n", aux_product.productId, bid, extractCategory(aux_product), atof(price), aux_product.bidCounter);
-					}
-                }
-            }
-        }   
-        else printf("+ Error: Bid not possible\n");
-    }
+            	}
+        	}        
+	}   
+    else printf("+ Error: Bid not possible\n");
 }
 
 void delete (char *product, tList *list) {
 	// auxiliar data
     tItemL aux_product;
     tPosL pos;
-    tProductId aux_id;
 
-	// check if list is empty
-    if (isEmptyList(*list) == true)
-        printf("+ Error: Delete not possible\n");
-    else {
-        strcpy(aux_id, product);
-        pos = findItem(aux_id, *list);
-		// check if position was found
-        if(pos != LNULL){
-            aux_product = getItem (pos, *list);
-            printf("* Delete: product %s seller %s category %s price %.2f bids %d\n", aux_product.productId, aux_product.seller, extractCategory(aux_product), aux_product.productPrice, aux_product.bidCounter);
-			// first delete contents of the stack and then the product
-			while (!(isEmptyStack(aux_product.bidStack)))
-				pop(&aux_product.bidStack);
-            deleteAtPosition(pos, list);
-        }
-        else printf("+ Error: Delete not possible \n");
+	// check if there exists a product on the list with the wanted id
+	pos = exists(product, list);
+
+	//if it does
+    if(pos != LNULL){
+        aux_product = getItem (pos, *list);
+		printf("* Delete: product %s seller %s category %s price %.2f bids %d\n", aux_product.productId, aux_product.seller, extractCategory(aux_product), aux_product.productPrice, aux_product.bidCounter);
+		// first delete contents of the stack and then the product
+		while (!(isEmptyStack(aux_product.bidStack)))
+			pop(&aux_product.bidStack);
+        deleteAtPosition(pos, list);
     }
+    else printf("+ Error: Delete not possible \n");
 }
+
 
 void award (char *product, tList *list) {
 	// auxiliar data
 	tItemL aux_product;
 	tItemS aux_bid;
 	tPosL pos;
-	tProductId aux_id;
 
-	// check if list is empty
-	if(!(isEmptyList(*list))){
-		strcpy(aux_id, product);
-		pos = findItem(aux_id, *list);
-		// check if item was found
-		if(pos != LNULL){
-			aux_product = getItem(pos, *list);
-			// check if the stack is empty
-			if (!(isEmptyStack(aux_product.bidStack))){
-				aux_bid = peek(aux_product.bidStack);
-				printf("* Award: product %s bidder %s category %s price %.2f\n", aux_product.productId, aux_bid.bidder, extractCategory(aux_product), aux_bid.productPrice);
-			}
-			// first delete all the contents of the stack and then erase the item
-			while (!(isEmptyStack(aux_product.bidStack)))
-				pop(&aux_product.bidStack);
-			deleteAtPosition(pos, list);
+	// check if there exists a product on the list with the wanted id
+	pos = exists(product, list);
+
+	//if it does
+	if(pos != LNULL){
+		aux_product = getItem(pos, *list);
+		// check if the stack is empty
+		if (!(isEmptyStack(aux_product.bidStack))){
+			aux_bid = peek(aux_product.bidStack);
+			printf("* Award: product %s bidder %s category %s price %.2f\n", aux_product.productId, aux_bid.bidder, extractCategory(aux_product), aux_bid.productPrice);
 		}
+		// first delete all the contents of the stack and then erase the item
+		while (!(isEmptyStack(aux_product.bidStack)))
+			pop(&aux_product.bidStack);
+		deleteAtPosition(pos, list);
 	}
 	else printf ("+ Error: Award not possible");
 }
@@ -321,26 +317,23 @@ void withdraw (char *product, char *bid, tList *list) {
 	tItemL aux_product;
 	tItemS aux_bid;
 	tPosL pos;
-	tProductId aux_id;
 
-	// check if list is empty
-	if(!(isEmptyList(*list))){
-		strcpy (aux_id, product);
-		pos = findItem(aux_id, *list);
-		// check if the item was found
-		if(pos != LNULL){
-			aux_product = getItem(pos, *list);
-			// check if the bid stack is empty
-			if(!(isEmptyStack(aux_product.bidStack))){
-				aux_bid = peek(aux_product.bidStack);
-				// check if the biggest bid was made by given bidder
-				if(!(strcmp(aux_bid.bidder, bid))){
-					// pop that bid and update the item
-					pop(&aux_product.bidStack);
-					printf("* Withdraw: product %s bidder %s category %s price %.2f bids %d\n", aux_product.productId, aux_bid.bidder, extractCategory(aux_product), aux_bid.productPrice, aux_product.bidCounter);
-					aux_product.bidCounter--;
-					updateItem(aux_product, pos, list);
-				}
+	// check if there exists a product on the list with the wanted id
+	pos = exists(product, list);
+
+	//if it does
+	if(pos != LNULL){
+		aux_product = getItem(pos, *list);
+		// check if the bid stack is empty
+		if(!(isEmptyStack(aux_product.bidStack))){
+			aux_bid = peek(aux_product.bidStack);
+			// check if the biggest bid was made by given bidder
+			if(!(strcmp(aux_bid.bidder, bid))){
+				// pop that bid and update the item
+				pop(&aux_product.bidStack);
+				printf("* Withdraw: product %s bidder %s category %s price %.2f bids %d\n", aux_product.productId, aux_bid.bidder, extractCategory(aux_product), aux_bid.productPrice, aux_product.bidCounter);
+				aux_product.bidCounter--;
+				updateItem(aux_product, pos, list);
 			}
 		}
 	}
