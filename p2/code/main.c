@@ -217,8 +217,11 @@ void stat (tList *list){
 tPosL exists(char *product, tList *list){
 	tProductId aux_id;
 
+	// check if list is empty
 	if ((isEmptyList(*list)))
 		return LNULL;
+
+	// search for the product by id and return the result
 	strcpy (aux_id, product);
 	return findItem(aux_id, *list);
 }
@@ -372,6 +375,7 @@ void readTasks(char *filename) {
     const char delimiters[] = " \n\r";
     char buffer[MAX_BUFFER];
 
+	// create an empty list 
 	tList list;
 	createEmptyList(&list);
 
