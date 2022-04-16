@@ -97,8 +97,6 @@ tItemL addProduct (char *product, char *seller, char *category, char *price){
 	// create the product
 	tItemL aux_product;
 
-	// get and store its properties:
-
 	// get the product id and seller
     strcpy(aux_product.productId, product);
     strcpy(aux_product.seller, seller);
@@ -186,9 +184,8 @@ void stat (tList *list){
 			}
 
 			// check condition to break the loop
-			if (pos == last(*list))
-                break;
-            else pos = next(pos, *list);
+			if (pos == last(*list)) break;
+			else pos = next(pos, *list);
         }
 		// calculate average values 
         if (numBook == 0)
@@ -244,7 +241,6 @@ void bid (char *product, char *bid, char *price, tList *list ){
         if (!(strcmp(aux_product.seller, bid)))
             printf("+ Error: Bid not possible\n");
         else {
-
 			// check condition for the stack
 			if (!(isEmptyStack(aux_product.bidStack))){
 				if (peek(aux_product.bidStack).productPrice >= num_price){
@@ -262,9 +258,9 @@ void bid (char *product, char *bid, char *price, tList *list ){
 				if (push(aux_bid, &aux_product.bidStack)){
                 	updateItem(aux_product, pos, list);
             		printf("* Bid: product %s bidder %s category %s price %.2f bids %d \n", aux_product.productId, bid, extractCategory(aux_product), atof(price), aux_product.bidCounter);
-					}
-            	}
-        	}        
+				}
+            }
+        }        
 	}   
     else printf("+ Error: Bid not possible\n");
 }
@@ -360,8 +356,7 @@ void remove_product (tList *list) {
 				deleteAtPosition(pos, list);
 			}
 			// only change position if the element is the last
-			else pos = next(pos, *list);
-			count ++;
+			else pos = next(pos, *list); count ++;
 		} while (pos != LNULL);
 		// if no element has been removed, print error
 		if (count < 1) printf ("+ Error: Remove not possible");
