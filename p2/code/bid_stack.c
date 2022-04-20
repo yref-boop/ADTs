@@ -28,8 +28,11 @@ bool push(tItemS item, tStack *stack){
  *          -stack (the stack)
  *  Output: a boolean literal
  */
-    if (++stack -> top != MaxStackSize)
+    if (++stack -> top != MaxStackSize) {
         stack->array[stack->top] = item;
+		return true;
+	}
+	return false;
 }
 
 tStack pop (tStack *stack){
@@ -40,6 +43,7 @@ tStack pop (tStack *stack){
  *  Precondition: the stack is not empty
  */
     stack -> top --;
+	return *stack;
 }
 
 tItemS peek (tStack stack){
