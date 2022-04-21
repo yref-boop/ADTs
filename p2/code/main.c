@@ -130,13 +130,13 @@ void new (char *product, char *seller, char *category, char *price, tList *list)
 }
 
 void stat (tList *list){
-	// start auxiliar
+	// start auxiliary
 	tPosL pos;
     tItemL aux_product;
 	tItemS aux_bid;
 	char top_bidder[NAME_LENGTH_LIMIT];
 
-	// table auxiliar data
+	// table auxiliary data
     int numBook = 0; 
     int numPaint = 0;
     float priceBook = 0; 
@@ -146,14 +146,14 @@ void stat (tList *list){
 	// top bid data
 	tItemL tbid_product;
 	tItemS tbid_bid;
-	float tbid_val = 0.0;
+	float tbid_val = 0;
 
     if (isEmptyList (*list) == true)
         printf("+ Error: Stats not possible\n");
     else {
         pos = first(*list);
         while (1) {
-			// set the auxiliar product as the one corresponding to the iteration
+			// set the auxiliary product as the one corresponding to the iteration
             aux_product = getItem(pos, *list);
 			// if there are bids, check if bid value is bigger than last
 			if (!(isEmptyStack(aux_product.bidStack))){
@@ -165,7 +165,7 @@ void stat (tList *list){
 				}
 			}
 
-			// check if it is a book or a painint gand change corresponidng data
+			// check if it is a book or a painting and change corresponding data
             if(aux_product.productCategory == 0) {
                 numBook++;
                 priceBook += aux_product.productPrice;
@@ -191,12 +191,12 @@ void stat (tList *list){
         if (numBook == 0)
             avgBook = 0;
         else
-            avgBook = priceBook/numBook;
+            avgBook = priceBook/((float)numBook);
 
         if (numPaint == 0)
             avgPaint = 0;
         else 
-            avgPaint = pricePaint/numPaint;
+            avgPaint = pricePaint/((float)numPaint);
 		// print table 
         printf("\nCategory  Products    Price  Average\n");
         printf("Book      %8d %8.2f %8.2f\n", numBook, priceBook,avgBook);
@@ -224,7 +224,7 @@ tPosL exists(char *product, tList *list){
 }
 
 void bid (char *product, char *bid, char *price, tList *list ){
-	// auxiliar data
+	// auxiliary data
 	tItemL aux_product;
     tPosL pos;
 	tItemS aux_bid;
@@ -266,7 +266,7 @@ void bid (char *product, char *bid, char *price, tList *list ){
 }
 
 void delete (char *product, tList *list) {
-	// auxiliar data
+	// auxiliary data
     tItemL aux_product;
     tPosL pos;
 
@@ -287,7 +287,7 @@ void delete (char *product, tList *list) {
 
 
 void award (char *product, tList *list) {
-	// auxiliar data
+	// auxiliary data
 	tItemL aux_product;
 	tItemS aux_bid;
 	tPosL pos;
@@ -312,7 +312,7 @@ void award (char *product, tList *list) {
 }
 
 void withdraw (char *product, char *bid, tList *list) {
-	// auxiliar data
+	// auxiliary data
 	tItemL aux_product;
 	tItemS aux_bid;
 	tPosL pos;
@@ -340,7 +340,7 @@ void withdraw (char *product, char *bid, tList *list) {
 }
 
 void remove_product (tList *list) {
-	// auxiliar data
+	// auxiliary data
 	tItemL aux_product;
 	tPosL pos = first(*list);
 	int count = 0;

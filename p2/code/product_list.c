@@ -10,7 +10,6 @@
 #include "product_list.h"
 #include <string.h>
 #include <stdlib.h>
-#include <stdio.h>
 
 void createEmptyList (tList *list) {
     *list = LNULL;
@@ -18,7 +17,7 @@ void createEmptyList (tList *list) {
 
 bool createNode (tPosL *pos) {
 
-    //auxiliar function that creates a node
+    //auxiliary function that creates a node
     *pos = malloc (sizeof(struct tNode));
     return *pos != LNULL;
 }
@@ -53,7 +52,7 @@ tPosL previous (tPosL pos, tList list) {
     else {
         tPosL aux = list;
 
-        //from the beggining go to the left until the 
+        //from the beginning go to the left until the
         //next element is the one given
         while (aux -> next != pos)
             aux = aux -> next;
