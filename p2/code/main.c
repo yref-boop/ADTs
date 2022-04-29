@@ -18,12 +18,85 @@
 #include "product_list.h"
 
 void new (char *product, char *seller, char *category, char *price, tList *list);
+/*
+goal  : add a new product added by a
+input :
+	- product: a string representing the products id
+	- seller: a string representing the seller's name
+	- price: a string representing the price of the product
+	- list: the list where we wish to operate
+output: the list with the corresponding changes if successful, with one more product
+preCD : the list must have been initialized and the string of the category must be one of the two existing options
+postCD: the positions of the elements in the list following that of the inserted product may have varied
+*/
+
 void stat (tList *list);
+/*
+goal  : print the list of products, its data and a table containing info of the products and their category
+input :
+	- list: the list where we wish to operate
+output: printed on screen info about the current state of the list
+preCD : the list must have been initialized
+postCD: the list must not be altered
+*/
+
 void bid (char *product, char *bid, char *price, tList *list);
+/*
+goal  : add a new bid to the stack of a product
+input :
+	- product: a string representing the products id
+	- seller: a string representing the bidders's name
+	- price: a string representing the bid price of the product
+	- list: the list where we wish to operate
+output: the list with the corresponding changes
+preCD : the list must have been initialized
+postCD: the list must not vary, but the given product has a new entry on top of its stack
+*/
+
 void delete (char *product, tList *list);
+/*
+goal  : delete a product
+input :
+	- product: a string representing the products id
+	- list: the list where we wish to operate
+output: the list with the corresponding changes if successful, with one less product
+preCD : the list must have been initialized
+postCD: the positions of the elements in the list following that of the deleted product may have varied
+*/
+
 void award (char *product, tList *list);
+/*
+goal  : declare the winning bidder 
+input :
+	- product: a string representing the products id
+	- list: the list where we wish to operate
+output: the list with the corresponding changes if conditions met, with one less 
+preCD : the list must have been initialized
+postCD: the element on the list may have been deleted (if a winner was found successfully)
+*/
+
 void withdraw (char *product, char *bid, tList *list);
+/*
+goal  : deletes the highest bid of a product
+input :
+	- product: a string representing the products id
+	- bid: a string representing the price of the product
+	- list: the list where we wish to operate
+output: the list without changes, only a products stack has been reduced by 1
+preCD : the list must have been initialized
+*/
+
 void remove_product (tList *list);
+/*
+goal  : remove a product
+input :
+	- product: a string representing the products id
+	- list: the list where we wish to operate
+output: the list with the corresponding changes if successful, with one less product
+preCD : the list must have been initialized
+postCD: the positions of the elements in the list following that of the deleted product may have varied
+*/
+
 
 void processCommand(char *commandNumber, char command, char *param1, char *param2, char *param3, char *param4, tList *list) {
 
