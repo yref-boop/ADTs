@@ -99,6 +99,19 @@ postCD: the positions of the elements in the list following that of the deleted 
 
 
 void processCommand(char *commandNumber, char command, char *param1, char *param2, char *param3, char *param4, tList *list) {
+	/*
+goal  : process each command available and print its respective information.
+input :
+	commandNumber: the assigned command number
+	command: the command of the operation to use
+	param1: first of the multipurpose parameters which will be used in the selected operation
+	param2: second of the multipurpose parameters
+	param3: third multipurpose parameter
+	param4: fourth multipurpose parameter 
+	list: the list where we wish to operate
+output: the list with the corresponding changes (if any)
+preCD : the list must have been initialized
+*/
 
     switch (command) {
         case 'N': {
@@ -149,6 +162,13 @@ void processCommand(char *commandNumber, char command, char *param1, char *param
 }
 
 char* extractCategory(tItemL prod) {
+/*
+	goal  : convert the item's category variable into a string.
+	input :
+		item: the element from which we want to extract the category.
+	output: a string with one of the two categories.
+	preCD : the category must be one of the existing options.
+*/
     // translate the category to text.
     if (prod.productCategory == book)
         return "book";
@@ -157,6 +177,14 @@ char* extractCategory(tItemL prod) {
 }
 
 tItemS addBid (char *bidder, char *price){
+/*
+	goal: create a bid
+	input:
+		bidder: the string that represents the name of the bidder
+		price: the string representing the value of the new bid 
+	output: the item corresponfing to the bid
+*/
+
 	tItemS aux_bid;
 
 	strcpy(aux_bid.bidder, bidder);
@@ -167,6 +195,17 @@ tItemS addBid (char *bidder, char *price){
 }
 
 tItemL addProduct (char *product, char *seller, char *category, char *price){
+/*
+	goal: create a bid
+	input:
+		product: the string that represents the id of the product
+		seller: the string that represents the name of the bidder
+		category: the string representing the category 
+		price: the string representing the value of the new bid 
+	output: the item corresponfing to the product
+	preCD: the string of the category must be one of the existing options
+*/
+
 	// create the product
 	tItemL aux_product;
 
@@ -429,7 +468,8 @@ void remove_product (tList *list) {
 				deleteAtPosition(pos, list);
 			}
 			// only change position if the element is the last
-			else pos = next(pos, *list); count ++;
+			else pos = next(pos, *list); 
+			count ++;
 		} while (pos != LNULL);
 		// if no element has been removed, print error
 		if (count < 1) printf ("+ Error: Remove not possible");
@@ -438,6 +478,15 @@ void remove_product (tList *list) {
 }
 
 void readTasks(char *filename) {
+/*
+	goal  : read the input files and start each process.
+	input :
+		-filename: the filed used as input from which the instructions are readed.
+	output: the list with all the changes (if any).
+	preCD : the input file must be an existing one.
+*/
+
+
     FILE *f = NULL;
     char *commandNumber, *command, *param1, *param2, *param3, *param4;
     const char delimiters[] = " \n\r";
