@@ -25,3 +25,8 @@ moreover, the main will have added functionality:
 - award: the best bidder for a product is declared
 - withdraw: current highest bid for a product is withdrawn
 - remove: delete all products with no bids
+
+implementation of p1 and p2 can be checked by using the given script
+by placing all files under 'script' on the folder of the practical and executing.
+'./script.sh': minimal version
+'./script.sh -p test': complete version
